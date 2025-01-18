@@ -8,7 +8,7 @@ dependencies = [
     "aiogram>=3.17.0",
     "aiohttp==3.9.5",
     "ccxt>=4.4.48",
-    "python-dotenv>=1.0.1",
+    "pydantic-settings>=2.7.1",
 ]
 
 [dependency-groups]
