@@ -24,9 +24,9 @@ class BingX:
         try:
             exchange_tickers = self.bingx.fetch_tickers()
             filtered_tickers = filter(
-                lambda ticker: re.match(r"\w+\/USDT", ticker.get("symbol")), exchange_tickers.values()
+                lambda ticker: re.match(r"\w+\/USDT", ticker["symbol"]), exchange_tickers.values()
             )
-            currencies = map(lambda ticker: ticker.get("symbol").split("/")[0], filtered_tickers)
+            currencies = map(lambda ticker: ticker["symbol"].split("/")[0], filtered_tickers)
             return reduce(self.parse_exchange_currency, currencies, {})
         except Exception as e:
             print(f"Ошибка получения данных биржи {EXCHANGE_NAME['bingx']}: {e}")
@@ -34,19 +34,18 @@ class BingX:
     @staticmethod
     def parse_currencies_fees(acc: dict[str, list[CurrencyFee]], currency_data: dict) -> dict[str, list[CurrencyFee]]:
         def parse_networks(network):
-            network_info = network.get("info", {})
-            address = network_info.get("contractAddress", "")
-            chain = "BSC" if network_info.get("network") == "BEP20" else network_info.get("network")
+            address = network["info"].get("contractAddress", "")
+            chain = "BSC" if network["info"]["network"] == "BEP20" else network["info"]["network"]
 
             return {
                 "address": address,
                 "chain": chain,
-                "fee": network.get("fee"),
-                "deposit_enable": network.get("deposit"),
-                "withdraw_enable": network.get("withdraw"),
+                "fee": network["fee"],
+                "deposit_enable": network["deposit"],
+                "withdraw_enable": network["withdraw"],
             }
 
-        acc[currency_data.get("code")] = list(map(parse_networks, currency_data.get("networks").values()))
+        acc[currency_data["code"]] = list(map(parse_networks, currency_data["networks"].values()))
         return acc
 
     def get_currencies_fees(self) -> dict[str, list[CurrencyFee]]:
@@ -59,7 +58,7 @@ class BingX:
     def get_symbol_order_book(self, currency: str) -> OrderBook:
         try:
             order_book = self.bingx.fetch_order_book(f"{currency}/USDT", 20)
-            return {"bids": order_book.get("bids"), "asks": order_book.get("asks")}
+            return {"bids": order_book.get("bids", []), "asks": order_book.get("asks", [])}
         except Exception as e:
             print(f"Ошибка получения стакана цен {currency}/USDT {EXCHANGE_NAME['bingx']}: {e}")
 

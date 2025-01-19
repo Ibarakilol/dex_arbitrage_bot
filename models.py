@@ -28,3 +28,27 @@ class CurrencyFee(BaseModel):
 class OrderBook(BaseModel):
     bids: list[list[float]]
     asks: list[list[float]]
+
+
+class OrderBookParsed(BaseModel):
+    volume: int
+    buy_volume: float
+    orders: list[float]
+    orders_mean_price: float
+    orders_volume: float
+    spot_fee_amount: float
+    sell_volume: float
+
+
+class Arbitrage(BaseModel):
+    id: str
+    currency: str
+    address: str
+    chain: str
+    trade_path: str
+    swap_fee_amount: float
+    spot_fee_amount: float
+    withdraw_fee_amount: float
+    withdraw_fee_amount_usdt: float
+    spread: float
+    profit: float
