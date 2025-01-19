@@ -1,1 +1,1 @@
-EXCHANGE_NAME = {"bingx": "BingX"}
+EXCHANGE_NAME = {"bingx": "BingX", "coinex": "CoinEx"}

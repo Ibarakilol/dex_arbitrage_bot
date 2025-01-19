@@ -89,7 +89,7 @@ async def find_arbitrages(
                     deposit_chain = network
 
         if deposit_chain:
-            order_book = bingx.get_symbol_order_book(currency)
+            order_book = await bingx.get_symbol_order_book(currency)
             token_price = await jupiter.get_token_price(aggregator_data["address"])
 
             if order_book and token_price:

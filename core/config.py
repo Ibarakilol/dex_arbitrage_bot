@@ -14,5 +14,8 @@ class Settings(BaseSettings):
     BINGX_API_KEY: str
     BINGX_API_SECRET: str
 
+    COINEX_API_KEY: str
+    COINEX_API_SECRET: str
+
 
 settings = Settings()
