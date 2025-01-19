@@ -11,26 +11,7 @@ from models import CurrencyFee, ExchangeCurrency, OrderBook
 
 class BingX:
     bingx = ccxt.bingx({"apiKey": settings.BINGX_API_KEY, "secret": settings.BINGX_API_SECRET})
-
-    @staticmethod
-    def parse_exchange_currency(acc: dict[str, ExchangeCurrency], currency: str) -> dict[str, ExchangeCurrency]:
-        acc[currency] = {
-            "spot_link": f"https://bingx.com/en/spot/{currency}USDT/",
-            "deposit_link": "https://bingx.com/en/assets/recharge/",
-            "withdraw_link": "https://bingx.com/en/assets/withdraw/",
-        }
-        return acc
-
-    def get_exchange_currencies(self) -> dict[str, ExchangeCurrency]:
-        try:
-            exchange_tickers = self.bingx.fetch_tickers()
-            filtered_tickers = filter(
-                lambda ticker: re.match(r"\w+\/USDT", ticker["symbol"]), exchange_tickers.values()
-            )
-            currencies = map(lambda ticker: ticker["symbol"].split("/")[0], filtered_tickers)
-            return reduce(self.parse_exchange_currency, currencies, {})
-        except Exception as e:
-            print(f"Ошибка получения данных биржи {EXCHANGE_NAME['bingx']}: {e}")
+    currencies_fees: dict[str, list[CurrencyFee]] = {}
 
     @staticmethod
     def parse_currencies_fees(acc: dict[str, list[CurrencyFee]], currency_data: dict) -> dict[str, list[CurrencyFee]]:
@@ -55,6 +36,27 @@ class BingX:
             return reduce(self.parse_currencies_fees, currencies_data.values(), {})
         except Exception as e:
             print(f"Ошибка получения комиссий {EXCHANGE_NAME['bingx']}: {e}")
+
+    def parse_exchange_currency(self, acc: dict[str, ExchangeCurrency], currency: str) -> dict[str, ExchangeCurrency]:
+        acc[currency] = {
+            "spot_link": f"https://bingx.com/en/spot/{currency}USDT/",
+            "deposit_link": "https://bingx.com/en/assets/recharge/",
+            "withdraw_link": "https://bingx.com/en/assets/withdraw/",
+            "networks": self.currencies_fees.get(currency),
+        }
+        return acc
+
+    def get_exchange_currencies(self) -> dict[str, ExchangeCurrency]:
+        try:
+            exchange_tickers = self.bingx.fetch_tickers()
+            filtered_tickers = filter(
+                lambda ticker: re.match(r"\w+\/USDT", ticker["symbol"]), exchange_tickers.values()
+            )
+            currencies = map(lambda ticker: ticker["symbol"].split("/")[0], filtered_tickers)
+            self.currencies_fees = self.get_currencies_fees()
+            return reduce(self.parse_exchange_currency, currencies, {})
+        except Exception as e:
+            print(f"Ошибка получения данных биржи {EXCHANGE_NAME['bingx']}: {e}")
 
     async def get_symbol_order_book(self, currency: str) -> OrderBook:
         async with aiohttp.ClientSession() as client_session:

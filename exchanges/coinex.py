@@ -11,26 +11,7 @@ from models import CurrencyFee, ExchangeCurrency, OrderBook
 
 class CoinEx:
     coinex = ccxt.coinex({"apiKey": settings.COINEX_API_KEY, "secret": settings.COINEX_API_SECRET})
-
-    @staticmethod
-    def parse_exchange_currency(acc: dict[str, ExchangeCurrency], currency: str) -> dict[str, ExchangeCurrency]:
-        acc[currency] = {
-            "spot_link": f"https://www.coinex.com/ru/exchange/{currency.lower()}-usdt",
-            "deposit_link": f"https://www.coinex.com/ru/asset/deposit?type={currency}",
-            "withdraw_link": f"https://www.coinex.com/ru/asset/withdraw?type={currency}",
-        }
-        return acc
-
-    def get_exchange_currencies(self) -> dict[str, ExchangeCurrency]:
-        try:
-            exchange_tickers = self.coinex.fetch_tickers()
-            filtered_tickers = filter(
-                lambda ticker: re.match(r"\w+\/USDT", ticker["symbol"]), exchange_tickers.values()
-            )
-            currencies = map(lambda ticker: ticker["symbol"].split("/")[0], filtered_tickers)
-            return reduce(self.parse_exchange_currency, currencies, {})
-        except Exception as e:
-            print(f"Ошибка получения данных биржи {EXCHANGE_NAME['coinex']}: {e}")
+    currencies_fees: dict[str, list[CurrencyFee]] = {}
 
     @staticmethod
     def parse_currencies_fees(acc: dict[str, list[CurrencyFee]], currency_data: dict) -> dict[str, list[CurrencyFee]]:
@@ -56,6 +37,27 @@ class CoinEx:
             return reduce(self.parse_currencies_fees, currencies_data.values(), {})
         except Exception as e:
             print(f"Ошибка получения комиссий {EXCHANGE_NAME['coinex']}: {e}")
+
+    def parse_exchange_currency(self, acc: dict[str, ExchangeCurrency], currency: str) -> dict[str, ExchangeCurrency]:
+        acc[currency] = {
+            "spot_link": f"https://www.coinex.com/ru/exchange/{currency.lower()}-usdt",
+            "deposit_link": f"https://www.coinex.com/ru/asset/deposit?type={currency}",
+            "withdraw_link": f"https://www.coinex.com/ru/asset/withdraw?type={currency}",
+            "networks": self.currencies_fees.get(currency),
+        }
+        return acc
+
+    def get_exchange_currencies(self) -> dict[str, ExchangeCurrency]:
+        try:
+            exchange_tickers = self.coinex.fetch_tickers()
+            filtered_tickers = filter(
+                lambda ticker: re.match(r"\w+\/USDT", ticker["symbol"]), exchange_tickers.values()
+            )
+            currencies = map(lambda ticker: ticker["symbol"].split("/")[0], filtered_tickers)
+            self.currencies_fees = self.get_currencies_fees()
+            return reduce(self.parse_exchange_currency, currencies, {})
+        except Exception as e:
+            print(f"Ошибка получения данных биржи {EXCHANGE_NAME['coinex']}: {e}")
 
     async def get_symbol_order_book(self, currency: str) -> OrderBook:
         async with aiohttp.ClientSession() as client_session:

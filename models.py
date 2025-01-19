@@ -11,18 +11,19 @@ class SwapData(BaseModel):
     swap_fee_amount: float
 
 
-class ExchangeCurrency(BaseModel):
-    spot_link: str
-    deposit_link: str
-    withdraw_link: str
-
-
 class CurrencyFee(BaseModel):
     address: str
     chain: str
     fee: float
     deposit_enable: bool
     withdraw_enable: bool
+
+
+class ExchangeCurrency(BaseModel):
+    spot_link: str
+    deposit_link: str
+    withdraw_link: str
+    networks: list[CurrencyFee]
 
 
 class OrderBook(BaseModel):
@@ -38,6 +39,7 @@ class OrderBookParsed(BaseModel):
     orders_volume: float
     spot_fee_amount: float
     sell_volume: float
+    is_valid: bool
 
 
 class Arbitrage(BaseModel):
