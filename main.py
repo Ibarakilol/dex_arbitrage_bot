@@ -116,9 +116,9 @@ async def find_arbitrages(
                                 else parsed_order_book["orders"][0]
                             )
 
-                            trade_path = f"📕Покупка/LONG на {AGGREGATOR_NAME['jupiter']}({dex_trade_link})\nЦена: {token_price}\nК отдаче: {parsed_order_book['volume']} USDT\nК получению: ≈{parsed_order_book['buy_volume']} {currency}\n\n"
+                            trade_path = f"📕Покупка/LONG на {AGGREGATOR_NAME['jupiter']}\n{dex_trade_link}\n\nЦена: {token_price}\nК отдаче: {parsed_order_book['volume']} USDT\nК получению: ≈{parsed_order_book['buy_volume']} {currency}\n\n"
 
-                            trade_path += f"📗Продажа/SHORT на [{EXCHANGE_NAME[exchange]}]({data['spot_link']}) | [Ввод]({data['deposit_link']})\nЦена: {parsed_order_book['orders_mean_price']} {parsed_order_book['orders_volume']} [[{orders}]] ({orders_len})\nК получению: ≈{round(parsed_order_book['sell_volume'], 2)} USDT"
+                            trade_path += f"📗Продажа/SHORT на {EXCHANGE_NAME[exchange]}\n{data['spot_link']}\n{data['deposit_link']}\n\nЦена: {parsed_order_book['orders_mean_price']} {parsed_order_book['orders_volume']} [{orders}] ({orders_len})\nК получению: ≈{round(parsed_order_book['sell_volume'], 2)} USDT\n\n"
 
                             arbitrage = {
                                 "id": f"{currency}-{exchange}",
