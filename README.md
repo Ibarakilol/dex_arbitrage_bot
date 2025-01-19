@@ -33,4 +33,4 @@ $ uv run main.py
 
 ## Описание
 
-Бот автоматически ищет разницу цен между децентрализованными (в данном случае аггрегатор) и централизованными биржами. Поиск происходит в сети [Solana](https://solana.com/ru), поэтому для использования бота потребуется кошелек [Solflare](https://solflare.com/) и биржи [BingX](https://bingx.com/invite/F1RGVM/), [CoinEx](https://www.coinex.com/ru/).
+Бот автоматически ищет разницу цен между децентрализованными (в данном случае аггрегатор) и централизованными биржами. Поиск происходит в сети [Solana](https://jup.ag/), поэтому для использования бота потребуется кошелек [Solflare](https://solflare.com/) и биржи [BingX](https://bingx.com/invite/F1RGVM/), [CoinEx](https://www.coinex.com/ru/).
