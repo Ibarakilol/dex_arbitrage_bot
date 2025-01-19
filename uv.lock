@@ -14,32 +14,6 @@ wheels = [
 ]
 
 [[package]]
-name = "aiofiles"
-version = "24.1.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/0b/03/a88171e277e8caa88a4c77808c20ebb04ba74cc4681bf1e9416c862de237/aiofiles-24.1.0.tar.gz", hash = "sha256:22a075c9e5a3810f0c2e48f3008c94d68c65d763b9b03857924c99e57355166c", size = 30247 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a5/45/30bb92d442636f570cb5651bc661f52b610e2eec3f891a5dc3a4c3667db0/aiofiles-24.1.0-py3-none-any.whl", hash = "sha256:b4ec55f4195e3eb5d7abd1bf7e061763e864dd4954231fb8539a0ef8bb8260e5", size = 15896 },
-]
-
-[[package]]
-name = "aiogram"
-version = "3.17.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "aiofiles" },
-    { name = "aiohttp" },
-    { name = "certifi" },
-    { name = "magic-filter" },
-    { name = "pydantic" },
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/85/5e/a849ec3d64522e937906aa36b4b8f81bb7085928f9c0adea1b8f6ec02fad/aiogram-3.17.0.tar.gz", hash = "sha256:01bffbf43d6fb4a31e3c668a601bc7e71c2cf3919bd831ba6c179ef86034c2f4", size = 1371207 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/c3/1c/77268a6d9c6bb2e6b7ee66a15bd029fde317277a9a6b7a6cef17e7519546/aiogram-3.17.0-py3-none-any.whl", hash = "sha256:251738331107ce2a679a901354b1409b7544d9f030d8092dcc68f2bb3bb0c467", size = 610049 },
-]
-
-[[package]]
 name = "aiohttp"
 version = "3.9.5"
 source = { registry = "https://pypi.org/simple" }
@@ -276,9 +250,9 @@ name = "dex-arbitrage-bot"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "aiogram" },
     { name = "aiohttp" },
     { name = "ccxt" },
+    { name = "pydantic" },
     { name = "pydantic-settings" },
 ]
 
@@ -290,9 +264,9 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "aiogram", specifier = ">=3.17.0" },
     { name = "aiohttp", specifier = "==3.9.5" },
     { name = "ccxt", specifier = ">=4.4.48" },
+    { name = "pydantic", specifier = ">=2.10.5" },
     { name = "pydantic-settings", specifier = ">=2.7.1" },
 ]
 
@@ -357,15 +331,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/87/f9/c1eb8635a24e87ade2efce21e3ce8cd6b8630bb685ddc9cdaca1349b2eb5/isort-5.13.2.tar.gz", hash = "sha256:48fdfcb9face5d58a4f6dde2e72a1fb8dcaf8ab26f95ab49fab84c2ddefb0109", size = 175303 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d1/b3/8def84f539e7d2289a02f0524b944b15d7c75dab7628bedf1c4f0992029c/isort-5.13.2-py3-none-any.whl", hash = "sha256:8ca5e72a8d85860d5a3fa69b8745237f2939afe12dbf656afbcb47fe72d947a6", size = 92310 },
-]
-
-[[package]]
-name = "magic-filter"
-version = "1.0.12"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e6/08/da7c2cc7398cc0376e8da599d6330a437c01d3eace2f2365f300e0f3f758/magic_filter-1.0.12.tar.gz", hash = "sha256:4751d0b579a5045d1dc250625c4c508c18c3def5ea6afaf3957cb4530d03f7f9", size = 11071 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/cc/75/f620449f0056eff0ec7c1b1e088f71068eb4e47a46eb54f6c065c6ad7675/magic_filter-1.0.12-py3-none-any.whl", hash = "sha256:e5929e544f310c2b1f154318db8c5cdf544dd658efa998172acd2e4ba0f6c6a6", size = 11335 },
 ]
 
 [[package]]
