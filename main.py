@@ -26,7 +26,7 @@ def parse_exchanges_data(
 
 
 def get_arbitrage_message(arbitrage: Arbitrage) -> str:
-    return f"Пара: {arbitrage['currency']}/USDT ({arbitrage['chain']})\nКонтракт: {arbitrage['address']}\n\n{arbitrage['trade_path']}\n\nКомиссия: спот {arbitrage['spot_fee_amount']}$ / перевод {arbitrage['withdraw_fee_amount_usdt']}$ ({arbitrage['withdraw_fee_amount']} {arbitrage['currency']}) / свап {arbitrage['swap_fee_amount']} {arbitrage['currency']}\n💰Чистый спред: {arbitrage['profit']}$ ({arbitrage['spread']}%)"
+    return f"Пара: {arbitrage['currency']}/USDT ({arbitrage['chain']})\nКонтракт: {arbitrage['address']}\n\n{arbitrage['trade_path']}\n\nКомиссия: спот {arbitrage['spot_fee_amount']}$ / перевод {arbitrage['withdraw_fee_amount_usdt']}$ ({arbitrage['withdraw_fee_amount']} {arbitrage['currency']}) / свап {arbitrage['swap_fee_amount']} {arbitrage['currency']}\n💰Чистый спред: {arbitrage['profit']}$ ({arbitrage['spread']}%)\n\n"
 
 
 def parse_order_book(order_book: OrderBook, token_price: float, fee: float) -> OrderBookParsed:
@@ -118,7 +118,7 @@ async def find_arbitrages(
 
                             trade_path = f"📕Покупка/LONG на {AGGREGATOR_NAME['jupiter']}\n{dex_trade_link}\n\nЦена: {token_price}\nК отдаче: {parsed_order_book['volume']} USDT\nК получению: ≈{parsed_order_book['buy_volume']} {currency}\n\n"
 
-                            trade_path += f"📗Продажа/SHORT на {EXCHANGE_NAME[exchange]}\n{data['spot_link']}\n{data['deposit_link']}\n\nЦена: {parsed_order_book['orders_mean_price']} {parsed_order_book['orders_volume']} [{orders}] ({orders_len})\nК получению: ≈{round(parsed_order_book['sell_volume'], 2)} USDT\n\n"
+                            trade_path += f"📗Продажа/SHORT на {EXCHANGE_NAME[exchange]}\n{data['spot_link']}\n{data['deposit_link']}\n\nЦена: {parsed_order_book['orders_mean_price']} {parsed_order_book['orders_volume']} [{orders}] ({orders_len})\nК получению: ≈{round(parsed_order_book['sell_volume'], 2)} USDT"
 
                             arbitrage = {
                                 "id": f"{currency}-{exchange}",
@@ -145,7 +145,7 @@ async def main() -> None:
         aggregators_data = await jupiter.get_all_tokens_info()
 
         while True:
-            print(f"{datetime.now().strftime("%H:%M")}: Поиск спредов.")
+            print(f"{datetime.now().strftime("%H:%M")}: Поиск спредов...")
             await find_arbitrages(exchanges_data, aggregators_data)
             print(f"{datetime.now().strftime("%H:%M")}: Поиск закончен. Следующая итерация через 10 секунд.")
             await asyncio.sleep(10)
