@@ -1,7 +1,7 @@
 [project]
 name = "dex-arbitrage-bot"
 version = "0.1.0"
-description = "Бот по поиску арбитражных сделок между DEX и CEX биржами"
+description = "Telegram бот по поиску арбитражных сделок между DEX и CEX биржами"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

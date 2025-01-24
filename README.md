@@ -1,6 +1,6 @@
 # DEX Arbitrage Bot
 
-Бот по поиску арбитражных сделок между DEX и CEX биржами.
+Telegram бот по поиску арбитражных сделок между DEX и CEX биржами.
 
 ## Установка
 
@@ -33,4 +33,4 @@ $ uv run main.py
 
 ## Описание
 
-Бот автоматически ищет разницу цен между децентрализованными (в данном случае аггрегатор) и централизованными биржами. Поиск происходит в сети [Solana](https://jup.ag/), поэтому для использования бота потребуется кошелек [Solflare](https://solflare.com/) и биржи [BingX](https://bingx.com/invite/F1RGVM/), [CoinEx](https://www.coinex.com/ru/).
+Бот автоматически ищет разницу цен между децентрализованными (в данном случае аггрегатор) и централизованными биржами. Поиск происходит в сети [Solana](https://jup.ag/), поэтому для использования бота потребуется кошелек [Solflare](https://solflare.com/) и биржи [BingX](https://bingx.com/invite/F1RGVM/), [BitMart](https://www.bitmart.com/invite/c9DJGh/ru), [CoinEx](https://www.coinex.com/ru/), [MEXC](https://promote.mexc.com/r/d5s11Rec).
