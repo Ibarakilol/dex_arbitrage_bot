@@ -1,28 +1,48 @@
 import asyncio
 from datetime import datetime
-from functools import reduce
 from statistics import mean
+
+from aiogram import Bot, Dispatcher
+from aiogram.filters import CommandStart
+from aiogram.types import Message
 
 from aggregators.jupiter import jupiter
 from constants.aggregator_name import AGGREGATOR_NAME
 from constants.exchange_name import EXCHANGE_NAME
 from core.config import settings
 from exchanges import EXCHANGES
-from models import Arbitrage, ExchangeCurrency, OrderBook, OrderBookParsed, Token
+from models import (
+    Arbitrage,
+    CurrencyFee,
+    ExchangeCurrency,
+    OrderBook,
+    OrderBookParsed,
+    Token,
+)
+
+dp = Dispatcher()
+bot = Bot(token=settings.TELEGRAM_BOT_TOKEN)
 
 
-def parse_exchanges_data(
-    acc: dict[str, dict[str, ExchangeCurrency]], exchange: str
-) -> dict[str, dict[str, ExchangeCurrency]]:
-    exchange_currencies = EXCHANGES[exchange].get_exchange_currencies()
+async def get_exchanges_data() -> dict[str, dict[str, ExchangeCurrency]]:
+    exchanges_data: dict[str, dict[str, ExchangeCurrency]] = {}
 
-    for currency, data in exchange_currencies.items():
-        if currency in acc:
-            acc[currency] = {**acc[currency], exchange: data}
+    def parse_exchange_currencies(exchange_currencies: dict[str, list[CurrencyFee]]) -> None:
+        for currency, data in exchange_currencies.items():
+            if currency in exchanges_data:
+                exchanges_data[currency] = {**exchanges_data[currency], exchange: data}
+            else:
+                exchanges_data[currency] = {exchange: data}
+
+    for exchange in EXCHANGE_NAME.keys():
+        if exchange == "bitmart":
+            exchange_currencies = await EXCHANGES[exchange].get_exchange_currencies()
+            parse_exchange_currencies(exchange_currencies)
         else:
-            acc[currency] = {exchange: data}
+            exchange_currencies = EXCHANGES[exchange].get_exchange_currencies()
+            parse_exchange_currencies(exchange_currencies)
 
-    return acc
+    return exchanges_data
 
 
 def get_arbitrage_message(arbitrage: Arbitrage) -> str:
@@ -76,7 +96,7 @@ def parse_order_book(order_book: OrderBook, token_price: float, fee: float) -> O
 
 
 async def find_arbitrages(
-    exchanges_data: dict[str, dict[str, ExchangeCurrency]], aggregators_data: dict[str, Token]
+    chat_id: str, exchanges_data: dict[str, dict[str, ExchangeCurrency]], aggregators_data: dict[str, Token]
 ) -> None:
     for currency, exchange_data in exchanges_data.items():
         aggregator_data = aggregators_data.get(currency)
@@ -135,22 +155,30 @@ async def find_arbitrages(
                             }
 
                             arbitrage_message = get_arbitrage_message(arbitrage)
-                            print(arbitrage_message)
+                            await bot.send_message(chat_id, text=arbitrage_message, disable_web_page_preview=True)
 
 
-async def main() -> None:
+@dp.message(CommandStart())
+async def command_start_handler(message: Message) -> None:
+    chat_id = message.from_user.id
+    await message.answer(f"Привет, {message.from_user.full_name}!")
+
     try:
         print(f"{datetime.now().strftime("%H:%M")}: Инициализация данных...")
-        exchanges_data = reduce(parse_exchanges_data, EXCHANGE_NAME.keys(), {})
+        exchanges_data = await get_exchanges_data()
         aggregators_data = await jupiter.get_all_tokens_info()
 
         while True:
             print(f"{datetime.now().strftime("%H:%M")}: Поиск спредов...")
-            await find_arbitrages(exchanges_data, aggregators_data)
+            await find_arbitrages(chat_id, exchanges_data, aggregators_data)
             print(f"{datetime.now().strftime("%H:%M")}: Поиск закончен. Следующая итерация через 10 секунд.")
             await asyncio.sleep(10)
     except Exception as e:
         print(e)
+
+
+async def main() -> None:
+    await dp.start_polling(bot)
 
 
 if __name__ == "__main__":

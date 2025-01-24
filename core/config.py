@@ -9,11 +9,19 @@ class Settings(BaseSettings):
     MIN_PROFIT: int
     BLACK_LIST: list[str] = []
 
+    TELEGRAM_BOT_TOKEN: str
+
     BINGX_API_KEY: str
     BINGX_API_SECRET: str
 
+    BITMART_API_KEY: str
+    BITMART_API_SECRET: str
+
     COINEX_API_KEY: str
     COINEX_API_SECRET: str
+
+    MEXC_API_KEY: str
+    MEXC_API_SECRET: str
 
 
 settings = Settings()
