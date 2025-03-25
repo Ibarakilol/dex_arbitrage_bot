@@ -25,7 +25,7 @@ class BitMart:
         network = {
             "address": address,
             "chain": chain,
-            "fee": float(currency_data["withdraw_minfee"]),
+            "fee": float(currency_data["withdraw_fee"]) if currency_data["withdraw_fee"] else 0,
             "deposit_enable": currency_data["deposit_enabled"],
             "withdraw_enable": currency_data["withdraw_enabled"],
         }
